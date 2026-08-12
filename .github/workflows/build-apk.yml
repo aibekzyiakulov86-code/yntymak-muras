@@ -14,15 +14,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Unzip Flutter project
+      - name: Extract project
         run: |
-          mkdir flutter_project
-          unzip -q yntymak_muras_flutter_v0_1.zip -d flutter_project
-
-      - name: Find Flutter project
-        run: |
-          echo "Searching for pubspec.yaml..."
-          find flutter_project -name pubspec.yaml -print
+          unzip -q yntymak_muras_flutter_v0_1.zip -d project
+          echo "Folders:"
+          find project -maxdepth 3 -type f -name pubspec.yaml
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -30,23 +26,16 @@ jobs:
           flutter-version: '3.35.0'
           channel: stable
 
-      - name: Install dependencies
-        working-directory: flutter_project
+      - name: Find project and build
         run: |
-          PROJECT_DIR=$(dirname "$(find . -name pubspec.yaml -print -quit)")
-          echo "Project directory: $PROJECT_DIR"
-          echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
-
-      - name: Get dependencies
-        run: flutter pub get
-        working-directory: flutter_project
-
-      - name: Build APK
-        run: flutter build apk --release
-        working-directory: flutter_project
+          PROJECT=$(find project -name pubspec.yaml -printf '%h\n' | head -1)
+          echo "Flutter project: $PROJECT"
+          cd "$PROJECT"
+          flutter pub get
+          flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: yntymak-muras-apk
-          path: flutter_project/**/build/app/outputs/flutter-apk/app-release.apk
+          path: project/**/build/app/outputs/flutter-apk/app-release.apk
