@@ -1,3 +1,4 @@
+
 name: Build APK
 
 on:
@@ -14,9 +15,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Unzip Flutter project
+        run: |
+          unzip -o yntymak_muras_flutter_v0_1.zip -d flutter_project
+
       - name: Find Flutter project
         run: |
-          PROJECT_DIR=$(find . -name pubspec.yaml -not -path './.github/*' | head -n 1 | xargs dirname)
+          PROJECT_DIR=$(find flutter_project -name pubspec.yaml | head -n 1 | xargs dirname)
           echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
           echo "Found project: $PROJECT_DIR"
 
