@@ -17,7 +17,7 @@ jobs:
 
       - name: Unzip Flutter project
         run: |
-          unzip -o yntymak_muras_unified_v0_8_fixed4.zip -d flutter_project
+          unzip -o yntymak_muras_unified_v0_8_fixed4_CORRECTED.zip -d flutter_project
 
       - name: Find Flutter project
         run: |
